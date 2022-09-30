@@ -1,0 +1,7 @@
+@startuml
+class Menu {
+    - bookArray[] : String
+    + choice()
+    + Menu(choice : int)
+}
+@enduml
