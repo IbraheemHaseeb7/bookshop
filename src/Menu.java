@@ -7,8 +7,6 @@ public class Menu {
     Shop shop = new Shop(booksArray);
 
     public String showOptions() {
-        System.out.println(Shop.bookCounter);
-
         return String.format("1. Add new Book\n2. Search one Book\n3. Sell One Book\n4. Print All Book\n5. Terminate\n6. See Revenue\n");
 
     }
@@ -57,7 +55,9 @@ public class Menu {
     }
 
     public void sellOneBook() {
-        Book search = linearSearch(takeISBN());
+        String ISBN = takeISBN();
+        Book search = linearSearch(ISBN);
+        removeFromArray(search, ISBN);
         Shop.revenue = Shop.revenue + search.getPrice();
         Shop.bookCounter--;
     }
@@ -81,9 +81,22 @@ public class Menu {
 
         return search;
     }
+
+    public int getIndex(String ISBN) {
+        int index = 0;
+        
+        for (int counter = 0; counter < Shop.bookCounter; counter++) {
+            if (this.shop.getBooks()[counter].getISBN().equals(ISBN)) {
+                index = counter;
+            }
+        }
+
+        return index;
+    }
     
     public String takeISBN() {
         Scanner input = new Scanner(System.in);
+        System.out.print("ISBN: ");
         String ISBN = input.nextLine();
         return ISBN;
     }
@@ -107,18 +120,12 @@ public class Menu {
         return new Book(price, ISBN, title, new Author(fname, lname, email));
     }
 
-    public void removeFromArray(String ISBN) {
-        // Book foundBook = new Book(0, "", "", new Author("", "", ""));
+    public void removeFromArray(Book book, String ISBN) {
 
-        for (int counter = 0; counter < Shop.bookCounter; counter++) {
-            if (shop.getBooks()[counter].getISBN().equals(ISBN)) {
-                shop.getBooks()[counter].setISBN(null);
-                shop.getBooks()[counter].setPrice(0);
-                shop.getBooks()[counter].setTitle(null);
-                shop.getBooks()[counter].setISBN(null);
-            }
+        int index = getIndex(ISBN);
+
+        for (int counter = index; counter < Shop.bookCounter; counter++) {
+            shop.getBooks()[counter] = shop.getBooks()[counter + 1];
         }
-
-        Shop.bookCounter--;
     }
 }
